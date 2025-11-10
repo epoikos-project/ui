@@ -1,5 +1,8 @@
 # syntax=docker.io/docker/dockerfile:1
 
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_WS_URL
+
 FROM node:22-alpine AS base
 
 # Install dependencies only when needed
@@ -20,6 +23,8 @@ RUN \
 
 # Rebuild the source code only when needed
 FROM base AS builder
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL}
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -38,6 +43,8 @@ RUN \
 
 # Production image, copy all the files and run next
 FROM base AS runner
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL}
 WORKDIR /app
 
 ENV NODE_ENV=production
