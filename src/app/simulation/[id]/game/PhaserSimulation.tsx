@@ -41,7 +41,7 @@ export const PhaserSimulation = forwardRef<IRefPhaserGame, IProps>(
       };
     }, [ref]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       EventBus.on("preloading-started", (scene_instance: Phaser.Scene) => {
         scene_instance.data.set("props", props);
         scene_instance.data.set("nats", nats);
