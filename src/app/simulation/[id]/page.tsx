@@ -18,14 +18,12 @@ export default async function Home({
 }) {
   const { id } = await params;
 
-  const data = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/simulation/${id}`
-  );
+  const data = await fetch(`${process.env.BACKEND_URL}/simulation/${id}`);
   const worldData = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/simulation/${id}/world`
+    `${process.env.BACKEND_URL}/simulation/${id}/world`
   );
   const agentsData = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/simulation/${id}/agent`,
+    `${process.env.BACKEND_URL}/simulation/${id}/agent`,
     { next: { tags: ["agents"] } }
   );
   const sim = await data.json();

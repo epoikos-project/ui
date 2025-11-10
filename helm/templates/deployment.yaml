@@ -39,6 +39,8 @@ spec:
               value: production
             - name: PORT
               value: "3000"
+            - name: BACKEND_URL
+              value: {{ .Values.config.backend.url }}
           ports:
             - name: http
               containerPort: 3000

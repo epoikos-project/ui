@@ -121,5 +121,6 @@ tolerations: []
 
 affinity: {}
 
-backend:
-  url: ""
+config:
+  backend:
+    url: ""
