@@ -45,7 +45,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
   >([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/configuration/models", {
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/configuration/models", {
       headers: { accept: "application/json" },
     })
       .then((res) => res.json())

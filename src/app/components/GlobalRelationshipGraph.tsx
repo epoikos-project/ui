@@ -65,7 +65,7 @@ export function GlobalRelationshipGraph() {
 
   useEffect(() => {
     async function fetchGraph() {
-      const url = `http://localhost:8000/simulation/${simulation.id}/relationship_graph`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/simulation/${simulation.id}/relationship_graph`;
       try {
         const res = await fetch(url);
         if (!res.ok) return;

@@ -65,7 +65,7 @@ export function RelationshipGraph() {
     async function fetchGraph() {
       const params = new URLSearchParams();
       params.set("agent_id", agent.id);
-      const url = `http://localhost:8000/simulation/${simulation.id}/relationship_graph?${params}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/simulation/${simulation.id}/relationship_graph?${params}`;
       try {
         const res = await fetch(url);
         if (!res.ok) return;
