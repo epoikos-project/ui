@@ -16,7 +16,7 @@ pipeline {
             steps {
                 container('kaniko') {
                     script {
-                        buildDockerImage(buildArgs: ['NEXT_PUBLIC_API_URL=https://epoikos-api.h4hn.de', 'NEXT_PUBLIC_WS_URL=wss://epoikos-api.h4hn.de/ws'])
+                        buildDockerImage(buildArgs: ['NEXT_PUBLIC_API_URL=https://epoikos.h4hn.de/api', 'NEXT_PUBLIC_WS_URL=wss://epoikos.h4hn.de/ws'])
                     }
                 }
             }
