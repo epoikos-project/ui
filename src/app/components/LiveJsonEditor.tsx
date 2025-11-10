@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Box, Button, TextField, Typography, Paper } from "@mui/material";
-
-import type { AgentType } from "./AgentConfigForm";
+import { AgentType } from "../config/types";
 
 /**
  * Slice of state kept in Page for world settings
@@ -43,12 +42,12 @@ const LiveJsonEditor: React.FC<Props> = ({
   /** Shape that mirrors what /configuration expects (minus id & name) */
   const compose = () => ({
     agents,
+    //@ts-expect-error is ok
+
     settings: { world: { ...world, resources: resources ?? [] } },
   });
 
-  const [jsonText, setJsonText] = useState(
-    JSON.stringify(compose(), null, 2)
-  );
+  const [jsonText, setJsonText] = useState(JSON.stringify(compose(), null, 2));
   const [error, setError] = useState<string | null>(null);
 
   /* keep preview in sync whenever state changes */
@@ -72,16 +71,10 @@ const LiveJsonEditor: React.FC<Props> = ({
       ) {
         setWorld(parsed.settings.world as WorldConfigState);
       }
-      if (
-        !Array.isArray(parsed) &&
-        parsed.settings?.world?.resources &&
-        setResources !== undefined
-      ) {
-        setResources(parsed.settings.world.resources as ResourceConfig[]);
-      }
 
       setError(null);
-    } catch (e: any) {
+    } catch (e: unknown) {
+      //@ts-expect-error is ok
       setError(e.message || "Invalid JSON");
     }
   };

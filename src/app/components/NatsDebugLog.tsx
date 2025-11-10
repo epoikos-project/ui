@@ -3,12 +3,6 @@
 import { useDebugLogs } from "@/app/provider/DebugLogsProvider";
 import { Card, CardHeader, CardContent, Typography, Box } from "@mui/material";
 
-interface LogEntry {
-  timestamp: number;
-  subject: string;
-  payload: string;
-}
-
 export default function NatsDebugLog() {
   const logs = useDebugLogs();
 

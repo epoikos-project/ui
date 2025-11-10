@@ -2,7 +2,7 @@ import { Msg, Subscription } from "@nats-io/nats-core";
 import { useNats } from "./useNats";
 import { useRef, useEffect } from "react";
 
-type MsgHandler<T> = (this: T, msg: Msg) => unknown | Promise<unknown>;
+type MsgHandler<T> = (this: T | void, msg: Msg) => unknown | Promise<unknown>;
 
 export function useSubscribe() {
   const nc = useNats();
@@ -24,7 +24,7 @@ export function useSubscribe() {
   async function subscribe<T>(
     subject: string,
     handler: MsgHandler<T>,
-    thisArg?: T,
+    thisArg?: T
   ): Promise<() => unknown> {
     if (!nc) {
       console.warn("NATS connection not ready.");
@@ -64,5 +64,5 @@ export function useSubscribe() {
 export type SubscribeFunction<T> = (
   subject: string,
   handler: MsgHandler<T>,
-  thisArg?: T,
+  thisArg?: T
 ) => Promise<() => unknown>;

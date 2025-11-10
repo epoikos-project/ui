@@ -10,14 +10,11 @@ import {
   Button,
 } from "@mui/material";
 import { useAgent } from "../hooks/useAgent";
-import { useSimulation } from "../hooks/useSimulation";
 import { RelationshipGraph } from "./RelationshipGraph";
 import { useEffect, useState } from "react";
-import { useAgentLogs } from "@/app/provider/AgentLogsProvider";
 
 export function AgentInfo() {
   const { agent, refresh, moveTo } = useAgent();
-  const { simulation } = useSimulation();
   const [moveToCoords, setMoveToCoords] = useState({
     x: agent.x_coord,
     y: agent.y_coord,

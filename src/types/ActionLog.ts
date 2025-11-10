@@ -6,4 +6,5 @@ export interface ActionLog {
   tick: number;
   action: string;
   agent_id: string;
+  subject?: string;
 }

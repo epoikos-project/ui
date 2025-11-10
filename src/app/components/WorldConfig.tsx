@@ -1,15 +1,15 @@
 "use client";
 
-import React from 'react';
-import ResourceConfigForm from './ResourceConfigForm';
-import type { ResourceConfig } from './LiveJsonEditor';
+import React from "react";
+import ResourceConfigForm from "./ResourceConfigForm";
+import type { ResourceConfig } from "./LiveJsonEditor";
 import {
   Box,
   Paper,
   Typography,
   TextField,
-  Grid
-} from '@mui/material';
+  GridLegacy as Grid,
+} from "@mui/material";
 
 type WorldConfigProps = {
   worldWidth: number;
@@ -41,7 +41,7 @@ const WorldConfig: React.FC<WorldConfigProps> = ({
       <Typography variant="h5" align="center" gutterBottom>
         World Configuration
       </Typography>
-      
+
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <TextField
@@ -55,7 +55,7 @@ const WorldConfig: React.FC<WorldConfigProps> = ({
             required
           />
         </Grid>
-        
+
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
@@ -68,7 +68,7 @@ const WorldConfig: React.FC<WorldConfigProps> = ({
             required
           />
         </Grid>
-        
+
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
@@ -81,7 +81,7 @@ const WorldConfig: React.FC<WorldConfigProps> = ({
             required
           />
         </Grid>
-        
+
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
@@ -95,17 +95,19 @@ const WorldConfig: React.FC<WorldConfigProps> = ({
           />
         </Grid>
       </Grid>
-      
+
       <Box mt={3}>
         <Typography variant="body2" color="textSecondary">
-          Configure the world dimensions, number of regions, and available resources for your simulation.
-          These settings will be saved as part of your configuration.
+          Configure the world dimensions, number of regions, and available
+          resources for your simulation. These settings will be saved as part of
+          your configuration.
         </Typography>
       </Box>
-      
-      <Box mt={2} sx={{ display: 'flex', justifyContent: 'center' }}>
+
+      <Box mt={2} sx={{ display: "flex", justifyContent: "center" }}>
         <Typography variant="body2" color="primary">
-          World size: {worldWidth}x{worldHeight}, {numRegions} regions, {totalResources} total resources
+          World size: {worldWidth}x{worldHeight}, {numRegions} regions,{" "}
+          {totalResources} total resources
         </Typography>
       </Box>
       {/* Resource configuration section */}

@@ -15,7 +15,7 @@ import {
 import AgentConfigForm from "../components/AgentConfigForm";
 import WorldConfig from "../components/WorldConfig";
 import LiveJsonEditor from "../components/LiveJsonEditor";
-import type { UnifiedConfig, AgentType } from "./types";
+import type { AgentType, UnifiedConfig } from "./types";
 import type { ResourceConfig } from "../components/LiveJsonEditor";
 
 interface Props {
@@ -29,7 +29,9 @@ interface Props {
   ) => void;
 }
 
-function TabPanel(props: React.PropsWithChildren<{ value: number; index: number }>) {
+function TabPanel(
+  props: React.PropsWithChildren<{ value: number; index: number }>
+) {
   const { children, value, index, ...other } = props;
   return (
     <div role="tabpanel" hidden={value !== index} {...other}>
@@ -47,7 +49,11 @@ export default function ConfigDialog({
   onClose,
   onSave,
 }: Props) {
-  const DEFAULT_WORLD = { size: [25, 25] as [number, number], num_regions: 4, total_resources: 25 };
+  const DEFAULT_WORLD = {
+    size: [25, 25] as [number, number],
+    num_regions: 4,
+    total_resources: 25,
+  };
   const [tab, setTab] = useState(0);
   const [name, setName] = useState("");
   const [agents, setAgents] = useState<AgentType[]>([]);
@@ -55,7 +61,9 @@ export default function ConfigDialog({
   const [worldHeight, setWorldHeight] = useState(25);
   const [numRegions, setNumRegions] = useState(4);
   const [totalResources, setTotalResources] = useState(25);
-  const [resourceSettings, setResourceSettings] = useState<ResourceConfig[]>([]);
+  const [resourceSettings, setResourceSettings] = useState<ResourceConfig[]>(
+    []
+  );
 
   // Initialize or reset form fields when dialog opens or editingConfig changes
   useEffect(() => {
@@ -98,7 +106,10 @@ export default function ConfigDialog({
           <Tab label="Preview" />
         </Tabs>
         <TabPanel value={tab} index={0}>
-          <AgentConfigForm agents={agents} setAgents={setAgents} />
+          <AgentConfigForm
+            agents={agents}
+            setAgents={(agents) => setAgents(agents)}
+          />
         </TabPanel>
         <TabPanel value={tab} index={1}>
           <WorldConfig
@@ -136,7 +147,10 @@ export default function ConfigDialog({
             onChange={(e) => setName(e.target.value)}
             fullWidth
           />
-          <Button variant="contained" onClick={() => onSave(name, agents, worldState)}>
+          <Button
+            variant="contained"
+            onClick={() => onSave(name, agents, worldState)}
+          >
             {editingConfig ? "Update Configuration" : "Save Configuration"}
           </Button>
         </Box>

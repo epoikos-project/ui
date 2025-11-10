@@ -86,7 +86,7 @@ export function useConfigManager(baseUrl: string) {
       return;
     }
     try {
-      const payload: UnifiedConfig = {
+      const payload: Partial<UnifiedConfig> = {
         id: editingConfig?.id || Date.now().toString(),
         name,
         agents,

@@ -9,9 +9,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useAgent } from "../hooks/useAgent";
 import { useSimulation } from "../hooks/useSimulation";
-import {
-  Button,
-} from "@mui/material";
+import { Button } from "@mui/material";
 
 import dagre from "dagre";
 
@@ -20,21 +18,28 @@ const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 const nodeWidth = 172;
 const nodeHeight = 36;
 
-const getLayoutedElements = (nodes, edges, direction = "TB") => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getLayoutedElements = (nodes: any[], edges: any[], direction = "TB") => {
   const isHorizontal = direction === "LR";
   dagreGraph.setGraph({ rankdir: direction });
 
-  nodes.forEach((node) => {
+  nodes.forEach((node: { id: string }) => {
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
   });
 
-  edges.forEach((edge) => {
-    dagreGraph.setEdge(edge.source, edge.target);
-  });
+  edges.forEach(
+    (edge: {
+      source: dagre.Edge;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      target: string | { [key: string]: any } | undefined;
+    }) => {
+      dagreGraph.setEdge(edge.source, edge.target);
+    }
+  );
 
   dagre.layout(dagreGraph);
 
-  const layoutedNodes = nodes.map((node) => {
+  const layoutedNodes = nodes.map((node: { id: string | dagre.Label }) => {
     const nodeWithPosition = dagreGraph.node(node.id);
     return {
       ...node,
@@ -66,7 +71,12 @@ export function RelationshipGraph() {
         if (!res.ok) return;
         const data: {
           nodes: Array<{ id: string; label: string }>;
-          edges: Array<{ source: string; target: string; sentiment: number; count: number }>;
+          edges: Array<{
+            source: string;
+            target: string;
+            sentiment: number;
+            count: number;
+          }>;
         } = await res.json();
         const newNodes = data.nodes.map((n) => ({
           id: n.id,
@@ -78,11 +88,11 @@ export function RelationshipGraph() {
           target: e.target,
           label: `s:${e.sentiment.toFixed(2)}, c:${e.count}`,
         }));
-        const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-          newNodes,
-          newEdges
-        );
+        const { nodes: layoutedNodes, edges: layoutedEdges } =
+          getLayoutedElements(newNodes, newEdges);
+        //@ts-expect-error is ok
         setNodes(layoutedNodes);
+        //@ts-expect-error is ok
         setEdges(layoutedEdges);
       } catch (err) {
         console.error(err);
@@ -93,12 +103,11 @@ export function RelationshipGraph() {
 
   const onLayout = useCallback(
     (direction: "TB" | "LR") => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-        nodes,
-        edges,
-        direction
-      );
+      const { nodes: layoutedNodes, edges: layoutedEdges } =
+        getLayoutedElements(nodes, edges, direction);
+      //@ts-expect-error is ok
       setNodes(layoutedNodes);
+      //@ts-expect-error is ok
       setEdges(layoutedEdges);
     },
     [nodes, edges, setNodes, setEdges]
@@ -115,8 +124,12 @@ export function RelationshipGraph() {
         fitView
       >
         <Panel position="top-right">
-          <Button className="xy-theme__button" onClick={() => onLayout("TB")}>vertical layout</Button>
-          <Button className="xy-theme__button" onClick={() => onLayout("LR")}>horizontal layout</Button>
+          <Button className="xy-theme__button" onClick={() => onLayout("TB")}>
+            vertical layout
+          </Button>
+          <Button className="xy-theme__button" onClick={() => onLayout("LR")}>
+            horizontal layout
+          </Button>
         </Panel>
         <Background />
       </ReactFlow>

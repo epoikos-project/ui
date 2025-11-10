@@ -20,28 +20,7 @@ import {
 } from "@mui/material";
 import { LineChart, Line, XAxis, YAxis, BarChart, Bar } from "recharts";
 import { Edit, FileCopy, Delete } from "@mui/icons-material";
-
-export type AgentType = {
-  id: number;
-  name: string;
-  count: number;
-  model: string;
-  personality?: string[];
-  objective?: string;
-  attributes: Attribute[];
-};
-
-type DistributionSpec =
-  | { type: "fixed"; value: number }
-  | { type: "normal"; mean: number; stddev: number }
-  | { type: "binomial"; trials: number; probability: number }
-  | { type: "beta"; alpha: number; beta: number }
-  | { type: "dirichlet"; alphas: number[] };
-
-type Attribute = {
-  name: string;
-  spec: DistributionSpec;
-};
+import { AgentType, Attribute, DistributionSpec } from "../config/types";
 
 type Props = {
   agents: AgentType[];
@@ -57,11 +36,13 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
   const [objective, setObjective] = useState("");
   const [personality, setPersonality] = useState<string[]>([""]);
   const [attributes, setAttributes] = useState<Attribute[]>(() =>
-    MANDATORY.map((n) => ({ name: n, spec: { type: "fixed", value: 0 } })),
+    MANDATORY.map((n) => ({ name: n, spec: { type: "fixed", value: 0 } }))
   );
   const [errors, setErrors] = useState<string[]>([]);
 
-  const [availableModels, setAvailableModels] = useState<{ id: string; name: string }[]>([]);
+  const [availableModels, setAvailableModels] = useState<
+    { id: string; name: string }[]
+  >([]);
 
   useEffect(() => {
     fetch("http://localhost:8000/configuration/models", {
@@ -83,7 +64,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
       MANDATORY.map((n) => ({
         name: n,
         spec: { type: "fixed", value: 0 },
-      })),
+      }))
     );
     setErrors([]);
   };
@@ -101,10 +82,14 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
         "spec" in at
           ? (at as Attribute)
           : {
-              name: at.name,
-              spec: { type: "fixed", value: (at as any).value },
-            },
-      ),
+              name: (at as Attribute).name,
+              spec: {
+                type: "fixed",
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                value: (at as any).value,
+              },
+            }
+      )
     );
   };
 
@@ -138,7 +123,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
         personality: personality.filter((p) => p.trim()),
         attributes: attributes.map((attr) => ({
           name: attr.name,
-          value: sampleAttr(attr.spec),
+          value: sampleAttr(attr.spec as DistributionSpec),
         })),
       });
     }
@@ -146,7 +131,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
     setAgents(
       editing
         ? agents.map((a) => (a.id === editing.id ? newOnes[0] : a))
-        : [...agents, ...newOnes],
+        : [...agents, ...newOnes]
     );
     reset();
   };
@@ -203,6 +188,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
   const makeBetaData = (α: number, β: number) => {
     const data: { x: number; y: number }[] = [];
     const B = (α: number, β: number) =>
+      // @ts-expect-error is ok
       Math.exp(Math.lgamma(α) + Math.lgamma(β) - Math.lgamma(α + β));
     for (let i = 0; i <= 100; i++) {
       const t = i / 100;
@@ -353,7 +339,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                 value={p}
                 onChange={(e) =>
                   setPersonality((ps) =>
-                    ps.map((t, idx) => (idx === i ? e.target.value : t)),
+                    ps.map((t, idx) => (idx === i ? e.target.value : t))
                   )
                 }
               />
@@ -393,7 +379,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                   <InputLabel>Distribution</InputLabel>
                   <Select
                     label="Distribution"
-                    value={attr.spec.type}
+                    value={attr.spec?.type}
                     onChange={(e) => {
                       const type = e.target.value as DistributionSpec["type"];
                       let spec: DistributionSpec;
@@ -424,7 +410,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                 </FormControl>
 
                 {/* Fixed */}
-                {attr.spec.type === "fixed" && (
+                {attr.spec?.type === "fixed" && (
                   <TextField
                     label="Value"
                     type="number"
@@ -434,13 +420,14 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                       changeAttrSpec(i, {
                         ...attr.spec,
                         value: +e.target.value,
+                        type: "fixed",
                       })
                     }
                   />
                 )}
 
                 {/* Normal */}
-                {attr.spec.type === "normal" && (
+                {attr.spec?.type === "normal" && (
                   <Box
                     sx={{
                       flex: 1,
@@ -489,6 +476,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                       valueLabelDisplay="auto"
                       sx={{ width: 240 }}
                       onChange={(_, val) =>
+                        //@ts-expect-error is ok
                         changeAttrSpec(i, {
                           ...attr.spec,
                           mean: val as number,
@@ -506,6 +494,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                       valueLabelDisplay="auto"
                       sx={{ width: 240 }}
                       onChange={(_, val) =>
+                        //@ts-expect-error is ok
                         changeAttrSpec(i, {
                           ...attr.spec,
                           stddev: val as number,
@@ -516,7 +505,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                 )}
 
                 {/* Binomial */}
-                {attr.spec.type === "binomial" && (
+                {attr.spec?.type === "binomial" && (
                   <Box
                     sx={{
                       flex: 1,
@@ -549,6 +538,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                       valueLabelDisplay="auto"
                       sx={{ width: 240 }}
                       onChange={(_, val) =>
+                        //@ts-expect-error is ok
                         changeAttrSpec(i, {
                           ...attr.spec,
                           trials: val as number,
@@ -566,6 +556,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                       valueLabelDisplay="auto"
                       sx={{ width: 240 }}
                       onChange={(_, val) =>
+                        //@ts-expect-error is ok
                         changeAttrSpec(i, {
                           ...attr.spec,
                           probability: val as number,
@@ -576,7 +567,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                 )}
 
                 {/* Beta */}
-                {attr.spec.type === "beta" && (
+                {attr.spec?.type === "beta" && (
                   <Box
                     sx={{
                       flex: 1,
@@ -615,6 +606,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                       valueLabelDisplay="auto"
                       sx={{ width: 240 }}
                       onChange={(_, val) =>
+                        //@ts-expect-error is ok
                         changeAttrSpec(i, {
                           ...attr.spec,
                           alpha: val as number,
@@ -632,6 +624,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                       valueLabelDisplay="auto"
                       sx={{ width: 240 }}
                       onChange={(_, val) =>
+                        //@ts-expect-error is ok
                         changeAttrSpec(i, {
                           ...attr.spec,
                           beta: val as number,
@@ -642,7 +635,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                 )}
 
                 {/* Dirichlet (params only) */}
-                {attr.spec.type === "dirichlet" && (
+                {attr.spec?.type === "dirichlet" && (
                   <Box
                     sx={{
                       flex: 1,
@@ -664,8 +657,10 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                           size="small"
                           value={a}
                           onChange={(e) => {
+                            //@ts-expect-error is ok
                             const newAlphas = [...attr.spec.alphas];
                             newAlphas[idx] = +e.target.value;
+                            //@ts-expect-error is ok
                             changeAttrSpec(i, {
                               ...attr.spec,
                               alphas: newAlphas,
@@ -675,8 +670,10 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                       ))}
                       <Button
                         onClick={() =>
+                          //@ts-expect-error is ok
                           changeAttrSpec(i, {
                             ...attr.spec,
+                            //@ts-expect-error is ok
                             alphas: [...attr.spec.alphas, 1],
                           })
                         }
@@ -686,9 +683,11 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                       <Button
                         color="error"
                         onClick={() =>
+                          //@ts-expect-error is ok
                           changeAttrSpec(i, {
                             ...attr.spec,
-                            alphas: attr.spec.alphas.slice(0, -1),
+                            //@ts-expect-error is ok
+                            alphas: attr.spec?.alphas.slice(0, -1),
                           })
                         }
                         disabled={attr.spec.alphas.length <= 2}
@@ -709,7 +708,7 @@ const AgentConfigForm: React.FC<Props> = ({ agents, setAgents }) => {
                     color="error"
                     onClick={() =>
                       setAttributes((atts) =>
-                        atts.filter((_, idx) => idx !== i),
+                        atts.filter((_, idx) => idx !== i)
                       )
                     }
                   >
