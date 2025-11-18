@@ -26,6 +26,7 @@ export default function ResourceConfigForm({ resources, setResources }: Props) {
   const [name, setName] = useState("");
   const [count, setCount] = useState(0);
   const [minAgents, setMinAgents] = useState(1);
+  const [regrowTime, setRegrowTime] = useState(1);
   const [miningTime, setMiningTime] = useState(1);
   const [energyYield, setEnergyYield] = useState(0);
 
@@ -36,6 +37,7 @@ export default function ResourceConfigForm({ resources, setResources }: Props) {
     setMinAgents(1);
     setMiningTime(1);
     setEnergyYield(0);
+    setRegrowTime(5);
   };
 
   const handleEdit = (r: ResourceConfig) => {
@@ -43,6 +45,7 @@ export default function ResourceConfigForm({ resources, setResources }: Props) {
     setName(r.name);
     setCount(r.count);
     setMinAgents(r.minAgents);
+    setRegrowTime(r.regrowTime);
     setMiningTime(r.miningTime);
     setEnergyYield(r.energyYield);
   };
@@ -54,7 +57,14 @@ export default function ResourceConfigForm({ resources, setResources }: Props) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cfg: ResourceConfig = { name, count, minAgents, miningTime, energyYield };
+    const cfg: ResourceConfig = {
+      name,
+      count,
+      minAgents,
+      miningTime,
+      regrowTime,
+      energyYield,
+    };
     if (editing) {
       setResources(resources.map((r) => (r === editing ? cfg : r)));
     } else {
@@ -85,14 +95,25 @@ export default function ResourceConfigForm({ resources, setResources }: Props) {
           >
             <ListItemText
               primary={r.name}
-              secondary={`Count: ${r.count}, Agents: ${r.minAgents}, Time: ${r.miningTime}, Yield: ${r.energyYield}`}
+              secondary={`Count: ${r.count}, Agents: ${r.minAgents}, Time: ${r.miningTime}, Yield: ${r.energyYield}, Regrow: ${r.regrowTime}`}
             />
           </ListItem>
         ))}
       </List>
       <Divider sx={{ my: 2 }} />
-      <Box component="form" onSubmit={submit} display="grid" gridTemplateColumns="repeat(5, 1fr)" gap={2}>
-        <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} required />
+      <Box
+        component="form"
+        onSubmit={submit}
+        display="grid"
+        gridTemplateColumns="repeat(5, 1fr)"
+        gap={2}
+      >
+        <TextField
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
         <TextField
           label="Count"
           type="number"
@@ -105,6 +126,13 @@ export default function ResourceConfigForm({ resources, setResources }: Props) {
           type="number"
           value={minAgents}
           onChange={(e) => setMinAgents(parseInt(e.target.value) || 1)}
+          required
+        />
+        <TextField
+          label="Regrow Time"
+          type="number"
+          value={regrowTime}
+          onChange={(e) => setRegrowTime(parseInt(e.target.value) || 1)}
           required
         />
         <TextField
@@ -121,8 +149,8 @@ export default function ResourceConfigForm({ resources, setResources }: Props) {
           onChange={(e) => setEnergyYield(parseInt(e.target.value) || 0)}
           required
         />
-        <Button type="submit" variant="contained" sx={{ gridColumn: 'span 5' }}>
-          {editing ? 'Update Resource' : 'Add Resource'}
+        <Button type="submit" variant="contained" sx={{ gridColumn: "span 5" }}>
+          {editing ? "Update Resource" : "Add Resource"}
         </Button>
       </Box>
     </Paper>

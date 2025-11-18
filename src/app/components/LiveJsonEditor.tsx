@@ -12,6 +12,7 @@ export interface ResourceConfig {
   count: number;
   minAgents: number;
   miningTime: number;
+  regrowTime: number;
   energyYield: number;
 }
 
