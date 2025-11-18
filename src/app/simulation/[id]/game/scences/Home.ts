@@ -375,12 +375,17 @@ export class Home extends Scene {
     assert(wallTileset);
     assert(resourceHarvestedTileset);
 
-    this.tilemapLayer = this.tilemap.createLayer(
+    const layer = this.tilemap.createLayer(
       0,
       [tileset, wallTileset, resourceHarvestedTileset],
       0,
       0
     );
+    if (layer) {
+      this.tilemapLayer = layer;
+    } else {
+      throw Error("Error creating tilemap");
+    }
 
     this.tilemap.layer.data.forEach((row) =>
       row.forEach((tile) => {
@@ -436,20 +441,27 @@ export class Home extends Scene {
       this.cursors = keyboard.createCursorKeys()!;
     }
 
-    this.input.on("pointermove", function (p) {
+    const onPointerMove = (p: {
+      isDown: boolean;
+      prevPosition: { x: number; y: number };
+      x: number;
+      y: number;
+    }) => {
       if (!p.isDown) return;
 
       this.cameras.main.scrollX -=
         (p.x - p.prevPosition.x) / this.cameras.main.zoom;
       this.cameras.main.scrollY -=
         (p.y - p.prevPosition.y) / this.cameras.main.zoom;
-    });
+    };
+
+    this.input.on("pointermove", onPointerMove);
 
     this.input.on(
       "wheel",
       (
-        _pointer: any,
-        _gameObjects: Array<any>,
+        _pointer: unknown,
+        _gameObjects: Array<unknown>,
         _deltaX: number,
         deltaY: number
       ) => {
@@ -557,6 +569,7 @@ export class Home extends Scene {
       rt.draw(container);
     });
 
+    // @ts-expect-error is ok
     rt.snapshot(async (image: HTMLImageElement) => {
       // Convert image to Blob
       const response = await fetch(image.src);
@@ -594,7 +607,7 @@ export class Home extends Scene {
     this.agentContainers.forEach(({ container }) => {
       rt.draw(container);
     });
-
+    // @ts-expect-error is ok
     rt.snapshot((image: HTMLImageElement) => {
       const a = document.createElement("a");
       a.href = image.src;

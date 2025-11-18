@@ -18,10 +18,12 @@ export default async function Home({
 }) {
   const { id } = await params;
 
-  const data = await fetch(`http://localhost:8000/simulation/${id}`);
-  const worldData = await fetch(`http://localhost:8000/simulation/${id}/world`);
+  const data = await fetch(`${process.env.BACKEND_URL}/simulation/${id}`);
+  const worldData = await fetch(
+    `${process.env.BACKEND_URL}/simulation/${id}/world`
+  );
   const agentsData = await fetch(
-    `http://localhost:8000/simulation/${id}/agent`,
+    `${process.env.BACKEND_URL}/simulation/${id}/agent`,
     { next: { tags: ["agents"] } }
   );
   const sim = await data.json();

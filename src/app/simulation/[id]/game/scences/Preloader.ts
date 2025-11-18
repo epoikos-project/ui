@@ -18,7 +18,6 @@ export class Preloader extends Scene {
       //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
       bar.width = 4 + 460 * progress;
     });
-
     EventBus.emit("preloading-started", this);
   }
 

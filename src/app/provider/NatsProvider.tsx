@@ -19,7 +19,9 @@ const NatsProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const connectToNats = async () => {
       try {
-        const nc = await wsconnect({ servers: ["ws://localhost:8443"] });
+        const nc = await wsconnect({
+          servers: [process.env.NEXT_PUBLIC_WS_URL ?? ""],
+        });
         if (isMounted) {
           setConnection(nc);
           console.log("Connected to NATS:", nc.getServer());

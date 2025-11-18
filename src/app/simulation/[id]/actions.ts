@@ -1,6 +1,6 @@
 "use server";
 
-const BASEURL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+const BASEURL = process.env.BACKEND_URL || "http://127.0.0.1:8000";
 
 export async function startSimulation(id: string) {
   await fetch(`${BASEURL}/orchestrator/start/${id}`, { method: "POST" });

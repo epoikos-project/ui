@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
-import os from "os";
 
 export const config = {
   api: {
@@ -13,7 +12,6 @@ export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const file = formData.get("file") as File;
   const simulationId = formData.get("simulationId") as string;
-  const tick = formData.get("tick") as string;
 
   if (!file) {
     return NextResponse.json({ error: "No file uploaded" }, { status: 400 });

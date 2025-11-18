@@ -7,4 +7,5 @@ export interface Message {
   serial_number: number;
   tick: number;
   to_agent_id: string;
+  subject?: string;
 }
